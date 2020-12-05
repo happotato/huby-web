@@ -1,0 +1,256 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap");
+@import url("https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+
+$font-family-sans-serif: "Nunito", -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
+
+$white:    #fff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$black:    #000;
+
+$primary: #f0762f;
+$secondary: #ECECEC;
+$terciary: #F0f0f0;
+$dark: #384851;
+
+
+$theme-colors: (
+    "primary": $primary,
+    "secondary": $secondary,
+    "terciary": $terciary,
+    "dark": $dark,
+);
+
+$body-bg: $secondary;
+$body-color: $gray-700;
+$input-bg: $terciary;
+$input-btn-focus-width: .0rem;
+$input-focus-border-color: scale-color($dark, $lightness: 30%);
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+$border-bottom-width: 3px;
+$btn-active-border-bottom-width: 2px;
+
+.btn {
+    font-weight: bold;
+}
+
+.btn-group > .btn {
+    &.active {
+        z-index: 0;
+    }
+
+    &:not(.active) {
+        z-index: 1;
+    }
+}
+
+@each $n, $c in $theme-colors {
+    .btn-#{$n}:not(.badge), .btn-outline-#{$n}:not(.badge) {
+        border-bottom: $border-bottom-width solid  scale-color($color: $c, $lightness: -10%);
+
+        &:hover, &:focus {
+            border-bottom-color: scale-color($color: $c, $lightness: -20%);
+        }
+        
+        &.active {
+            margin-top: $border-bottom-width - $btn-active-border-bottom-width;
+            border-bottom-width: $btn-active-border-bottom-width;
+            border-bottom-color: scale-color($color: $c, $lightness: -30%) !important;
+        }
+    }
+}
+
+.btn-secondary {
+    @extend .text-muted;
+}
+
+.card, .form-control {
+    border-bottom-width: $border-bottom-width;
+}
+
+.card-header {
+    @extend .text-muted;
+}
+
+html, body {
+    background-color: $secondary;
+}
+
+.w-max-content {
+    width: max-content !important;
+}
+
+.word-wrap {
+    word-wrap: anywhere !important;
+}
+
+.blur {
+    filter: blur(5px) !important;
+}
+
+.go-top-btn {
+    @extend .m-2;
+
+    position: fixed;
+    z-index: 999;
+    bottom: 0;
+    right: 0;
+}
+
+.searchbar {
+    @extend .d-flex;
+    @extend .flex-column;
+
+    & > *, & > * > * {
+        @extend .w-100;
+    }
+
+    & > div {
+        position: relative;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    &:focus-within > div {
+        opacity: initial;
+        pointer-events: initial;
+    }
+
+    & > div > div {
+        position: absolute;
+        max-height: 50vh;
+    }
+}
+
+.hub-banner {
+    @extend .card;
+    @extend .px-2;
+
+    position: relative;
+    height: 10vh;
+    min-height: 70px;
+    max-height: 150px;
+    background-color: $dark;
+    background-size: cover;
+    background-position: center;
+    background-origin: border-box;
+}
+
+.post-list-view {
+    overflow: hidden;
+
+    & > div {
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border-bottom-width: 1px !important;
+
+        &:not(:first-child) {
+            border-top: none !important;
+        }
+
+        &:first-child {
+            border-top-left-radius: inherit !important;
+            border-top-right-radius: inherit !important;
+        }
+
+        &:last-child {
+            border-bottom-left-radius: inherit !important;
+            border-bottom-right-radius: inherit !important;
+        }
+
+        &:nth-child(even) {
+            background-color: scale-color($color: white, $lightness: -2%);
+        }
+    }
+}
+
+.masonry {
+    --cols: 1;
+
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    grid-gap: 5px;
+
+    & > div {
+        @extend .d-flex;
+        @extend .flex-column;
+    }
+
+    @include media-breakpoint-up(xs) {
+        --cols: 2;
+    }
+
+    @include media-breakpoint-up(md) {
+        --cols: 3;
+    }
+
+    @include media-breakpoint-up(lg) {
+        --cols: 4;
+    }
+
+    @include media-breakpoint-up(xl) {
+        --cols: 5;
+    }
+}
+
+.md {
+    @extend .card;
+
+    .md-body, textarea {
+        @extend .p-4;
+        @extend .border-0;
+
+        background-color: $input-bg;
+    }
+
+    textarea {
+        outline: none;
+    }
+}
+
+.md-body {
+    img {
+        max-width: 50%;
+    }
+}
+
+.popup {
+    @extend .overflow-auto;
+
+    display: none;
+    z-index: 1030;
+
+    &, & > .popup-bg {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    & > .popup-bg {
+        background-color: rgba(0,0,0,0.2);
+    }
+
+    & > .popup-content {
+        @extend .container;
+
+        &, & > * {
+            @extend .w-100;
+            @extend .my-4;
+        }
+    }
+
+    &[data-open=true] {
+        @extend .d-flex;
+    }
+}
