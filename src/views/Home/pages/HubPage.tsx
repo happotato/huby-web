@@ -427,6 +427,15 @@ export default function HubPage(props: HubPageProps) {
   const history = useHistory();
   const api = useApi();
 
+  React.useEffect(() => {
+    if (!api.user) {
+      setState({
+        ...state,
+        editing: false,
+      });
+    }
+  }, [api.user]);
+
   const [mods, modsErr, isLoadingMods] = useAsync(() => api.getModerators({
     hub: state.hub.name,
   }), [state.hub]);
