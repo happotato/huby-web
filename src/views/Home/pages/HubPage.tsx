@@ -149,11 +149,12 @@ function PostDetails(props: PostDetailsProps) {
       </Post>
       <Popup
         open={showReplyPopup}
-        onCloseRequest={() => setShowReplyPopup(false)}>
+        onCloseRequest={() => setShowReplyPopup(false)}
+        title={t("label.createReply")}>
         <PostCreator
           type="Comment"
           onCreate={createReply}
-          expanded/>
+          open/>
       </Popup>
       <CommentList
         className="mb-3"

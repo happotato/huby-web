@@ -98,11 +98,12 @@ export default function Comment(props: CommentProps) {
       </Post>
       <Popup
         open={state.showReplyPopup}
-        onCloseRequest={() => setState({...state, showReplyPopup: false})}>
+        onCloseRequest={() => setState({...state, showReplyPopup: !state.showReplyPopup})}
+        title={t("label.createReply")}>
         <PostCreator
           type="Comment"
           onCreate={createReply}
-          expanded/>
+          open/>
       </Popup>
       {state.showReplies &&
         <CommentList
@@ -132,9 +133,9 @@ export function CommentList(props: CommentListProps) {
             backgroundColor: `hsl(0, 0%, ${100 - bg}%)`,
             borderLeft: `2px solid hsl(${fg}, 100%, 50%)`
           }}>
-          {props.items.map(({ reaction, post }, i) => (
+          {props.items.map(({ reaction, post }) => (
             <Comment
-              key={i}
+              key={post.id}
               className="border"
               comment={post}
               defaultReaction={reaction}

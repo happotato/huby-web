@@ -224,8 +224,6 @@ html, body {
 }
 
 .popup {
-    @extend .overflow-auto;
-
     display: none;
     z-index: 1030;
 
@@ -241,12 +239,21 @@ html, body {
         background-color: rgba(0,0,0,0.2);
     }
 
-    & > .popup-content {
-        @extend .container;
+    & > .popup-container {
+        @extend .w-100;
+        @extend .overflow-auto;
+        @extend .p-4;
 
-        &, & > * {
+        & > .popup-content {
+            @extend .card;
+            @extend .container;
+            @extend .my-auto;
+            @extend .mx-auto;
+            @extend .p-0;
+        }
+
+        & > .popup-content > * {
             @extend .w-100;
-            @extend .my-4;
         }
     }
 

@@ -62,7 +62,7 @@ interface PostListState {
   status: "error" | "loading" | "ok";
 }
 
-const Post = React.memo<PostProps>(props => {
+export default function Post(props: PostProps) {
   const [state, setState] = React.useState({
     post: props.post,
     reaction: props.defaultReaction,
@@ -333,7 +333,7 @@ const Post = React.memo<PostProps>(props => {
       }
     </div>
   );
-});
+}
 
 export function PostList(props: PostListProps) {
   const [state, setState] = React.useState<PostListState>({
@@ -433,7 +433,11 @@ export function PostList(props: PostListProps) {
   return (
     <div className={props.className}>
       {(api.user && props.onTopicCreate) &&
-        <PostCreator className="mb-3" type="Topic" onCreate={onTopicCreate} />
+       <PostCreator
+         className="card mb-3"
+         type="Topic"
+         headerTitle={t("label.createTopic")}
+         onCreate={onTopicCreate}/>
       }
       {state.tags.length > 0 &&
         <button
@@ -490,5 +494,3 @@ export function PostList(props: PostListProps) {
     </div>
   );
 }
-
-export default Post;
