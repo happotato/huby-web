@@ -229,47 +229,46 @@ export default function Post(props: PostProps) {
   return (
     <div className={className}>
       <div className="row no-gutters">
-        {state.post.postType == "Topic" && thumbnailUrl &&
-          <div className="col-3 col-md-2 mr-2">
-            <div className="overflow-hidden rounded w-100">
+        <div className="mr-2" style={{
+          width: "2rem",
+        }}>
+          <div className="d-flex flex-column align-items-center justify-content-start">
+            <button
+              className="btn btn-transparent btn-sm"
+              onClick={() => api.user && react("like")}>
+              <i
+                className={`fa fa-chevron-up${state.reaction == "like" ? " text-primary" : ""}`}
+                aria-hidden="true"/>
+            </button>
+            <b className="text-muted">
+              {t("count", { value: state.post.likes - state.post.dislikes })}
+            </b>
+            <button
+              className="btn btn-transparent btn-sm"
+              onClick={() => api.user && react("dislike")}>
+              <i
+                className={`fa fa-chevron-down${state.reaction == "dislike" ? " text-primary" : ""}`}
+                aria-hidden="true"/>
+            </button>
+          </div>
+        </div>
+        {state.post.postType == "Topic" && !state.showContent && thumbnailUrl &&
+          <div className="col-2 col-md-1 mr-2">
+            <div className="overflow-hidden rounded w-100 h-100">
               <img
                 className={`w-100 h-100 ${!showNsfw && props.post.isNSFW ? "blur" : ""}`}
                 loading="lazy"
                 src={thumbnailUrl}
                 style={{
                   objectFit: "cover",
+                  maxHeight: "5rem"
                 }} />
             </div>
           </div>
         }
         <div className="col">
-          <div>
-            <small className="text-muted">
-              <Link to={hubUrl}>
-                <b>{state.post.hub.name}</b>
-              </Link>
-              {" · "}
-              <Link className="text-muted" to={userUrl}>
-                {state.post.owner.username}
-              </Link>
-              {" · "}
-              <React.Fragment>{t("label.submitted")} </React.Fragment>
-              <React.Fragment>{t("datetime", { value: new Date(state.post.createdAt) })} </React.Fragment>
-              {" · "}
-              {t("label.commentWithCount", { count: state.post.commentsCount })}
-            </small>
-          </div>
           {state.post.postType == "Topic" &&
             <React.Fragment>
-              <Link className="text-dark" to={postUrl}>
-                {state.post.stickied &&
-                  <b>{state.post.title}</b>
-                }
-                {!state.post.stickied &&
-                  <span>{state.post.title}</span>
-                }
-              </Link>
-              <br />
               {state.post.isNSFW &&
                 <span className="badge badge-danger mr-2 mb-1">
                   {t("label.explicit")}
@@ -283,6 +282,14 @@ export default function Post(props: PostProps) {
                   {tag}
                 </span>
               ))}
+              <Link className="text-dark" to={postUrl}>
+                {state.post.stickied &&
+                  <b>{state.post.title}</b>
+                }
+                {!state.post.stickied &&
+                  <span>{state.post.title}</span>
+                }
+              </Link>
             </React.Fragment>
           }
           {state.post.postType == "Comment" &&
@@ -296,32 +303,33 @@ export default function Post(props: PostProps) {
               </Link>
             </small>
           }
-          <div className="btn-toolbar mt-1" role="toolbar">
-            <div className="btn-group btn-group-sm mr-2" role="group">
-              <button
-                className={`btn btn-secondary${state.showContent ? " active" : ""}`}
-                onClick={() => toggleShowContent()}>
+          <div className="d-flex flex-row align-items-center">
+            <button
+              className="btn btn-secondary btn-sm mt-1 mr-2"
+              onClick={() => toggleShowContent()}>
+              {!state.showContent &&
                 <i className="fa fa-expand" aria-hidden="true"></i>
-              </button>
-            </div>
-            <div className="btn-group btn-group-sm mr-2" role="group">
-              <button
-                className={`btn btn-sm btn-${state.reaction == "like" ? "primary" : "secondary"}`}
-                onClick={() => api.user && react("like")}>
-                <i className="fa fa-chevron-up" aria-hidden="true"></i>
-              </button>
-              <div className="btn btn-sm btn-terciary active">
-                <b>
-                  {t("count", { value: state.post.likes - state.post.dislikes })}
-                </b>
-              </div>
-              <button
-                className={`btn btn-sm btn-${state.reaction == "dislike" ? "primary" : "secondary"}`}
-                onClick={() => api.user && react("dislike")}>
-                <i className="fa fa-chevron-down" aria-hidden="true"></i>
-              </button>
-            </div>
-            {props.children}
+              }
+              {state.showContent &&
+                <i className="fa fa-compress" aria-hidden="true"></i>
+              }
+            </button>
+            <small className="text-muted">
+              <Link to={hubUrl}>
+                <b>{state.post.hub.name}</b>
+              </Link>
+              {" · "}
+              <Link className="text-muted" to={userUrl}>
+                {state.post.owner.username}
+              </Link>
+              {" · "}
+              <React.Fragment>{t("label.submitted")} </React.Fragment>
+              <React.Fragment>{t("datetime", { value: new Date(state.post.createdAt) })} </React.Fragment>
+              <br />
+              {t("label.commentWithCount", { count: state.post.commentsCount })}
+              {props.children && " · "}
+              {props.children}
+            </small>
           </div>
         </div>
       </div>
@@ -404,7 +412,7 @@ export function PostList(props: PostListProps) {
 
   function getCurrentPosts() {
     return state.posts
-      .filter(({post}) => {
+      .filter(({ post }) => {
         let tags: string[] = [];
 
         if (post.postType == "Topic") {
@@ -433,11 +441,11 @@ export function PostList(props: PostListProps) {
   return (
     <div className={props.className}>
       {(api.user && props.onTopicCreate) &&
-       <PostCreator
-         className="card mb-3"
-         type="Topic"
-         headerTitle={t("label.createTopic")}
-         onCreate={onTopicCreate}/>
+        <PostCreator
+          className="card mb-3"
+          type="Topic"
+          headerTitle={t("label.createTopic")}
+          onCreate={onTopicCreate} />
       }
       {state.tags.length > 0 &&
         <button
@@ -484,9 +492,9 @@ export function PostList(props: PostListProps) {
       {state.status == "loading" && <Spinner />}
       {state.status == "error" && <Error />}
       {(state.status == "ok" && state.posts.length == 0) &&
-       <p className="text-muted">
-         {t("label.empty")}
-       </p>
+        <p className="text-muted">
+          {t("label.empty")}
+        </p>
       }
       {(state.status == "ok" && state.hasMore) &&
         <Observer className="p-2" callback={() => more()} />

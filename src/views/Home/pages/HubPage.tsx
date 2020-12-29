@@ -123,26 +123,27 @@ function PostDetails(props: PostDetailsProps) {
         defaultExpanded>
         {api.user &&
           <React.Fragment>
-            <div className="btn-group btn-group-sm mr-2" role="group">
-              <button
-                className="btn btn-dark"
-                onClick={() => setShowReplyPopup(true)}>
-                <span>
-                  {t("label.reply")}
-                </span>
-              </button>
-            </div>
+            <a
+              href="#"
+              className="text-muted p-0 mr-1"
+              onClick={e => {
+                e.preventDefault();
+                setShowReplyPopup(true);
+              }}>
+              {t("label.reply").toLowerCase()}
+            </a>
             {canDelete &&
-              <div className="btn-group btn-group-sm" role="group">
-                <button
-                  className="btn btn-danger"
-                  onClick={() => deletePost()}>
-                  <i className="fa fa-trash mr-2" aria-hidden="true"></i>
-                  <span>
-                    {t("label.delete")}
-                  </span>
-                </button>
-              </div>
+              <a
+                href="#"
+                className="text-danger p-0 mr-1"
+                onClick={e => {
+                  e.preventDefault();
+                  deletePost();
+                }}>
+                <b>
+                  {t("label.delete").toLowerCase()}
+                </b>
+              </a>
             }
           </React.Fragment>
         }

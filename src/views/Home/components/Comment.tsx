@@ -79,21 +79,25 @@ export default function Comment(props: CommentProps) {
         view="minimal"
         defaultReaction={props.defaultReaction}
         defaultExpanded>
-        <div className="btn-group btn-group-sm mr-2">
-          <button
-            className={`btn btn-dark ${state.showReplies ? "active" : ""}`}
-            onClick={() => setState({...state, showReplies: !state.showReplies})}>
-            {t("label.reply_plural")}
-          </button>
-        </div>
+        <a
+          href="#"
+          className="text-muted p-0 mr-1"
+          onClick={e => {
+            e.preventDefault();
+            setState({...state, showReplies: !state.showReplies});
+          }}>
+          {t("label.reply_plural").toLowerCase()}
+        </a>
         {api.user &&
-          <div className="btn-group btn-group-sm">
-            <button
-              className="btn btn-dark"
-              onClick={() => setState({...state, showReplyPopup: !state.showReplyPopup})}>
-              {t("label.reply")}
-            </button>
-          </div>
+          <a
+            href="#"
+            className="text-muted p-0 mr-1"
+            onClick={e => {
+              e.preventDefault();
+              setState({...state, showReplyPopup: !state.showReplyPopup});
+            }}>
+            {t("label.reply").toLowerCase()}
+          </a>
         }
       </Post>
       <Popup

@@ -73,6 +73,12 @@ $btn-active-border-bottom-width: 2px;
     @extend .text-muted;
 }
 
+.btn-transparent {
+    @extend .text-muted;
+    @extend .border-0;
+    background-color: transparent !important;
+}
+
 .card, .form-control {
     border-bottom-width: $border-bottom-width;
 }
