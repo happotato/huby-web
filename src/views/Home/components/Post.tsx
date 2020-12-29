@@ -254,14 +254,15 @@ export default function Post(props: PostProps) {
         </div>
         {state.post.postType == "Topic" && !state.showContent && thumbnailUrl &&
           <div className="col-2 col-md-1 mr-2">
-            <div className="overflow-hidden rounded w-100 h-100">
+            <div className="overflow-hidden rounded w-100 h-100" style={{
+                maxHeight: "5rem",
+            }}>
               <img
                 className={`w-100 h-100 ${!showNsfw && props.post.isNSFW ? "blur" : ""}`}
                 loading="lazy"
                 src={thumbnailUrl}
                 style={{
                   objectFit: "cover",
-                  maxHeight: "5rem"
                 }} />
             </div>
           </div>
