@@ -13,12 +13,6 @@ import { createClassName } from "~/services/utils";
 
 export type PostCreateCallback<T extends TopicCreateData | CommentCreateData, E = void> = (base: T) => E;
 
-interface PostCreateProps {
-  open?: boolean;
-  headerTitle?: string;
-  className?: string;
-}
-
 interface TopicCreatorProps {
   type: "Topic";
   onCreate: PostCreateCallback<TopicCreateData>;
@@ -29,7 +23,13 @@ interface CommentCreatorProps {
   onCreate: PostCreateCallback<CommentCreateData>;
 }
 
-export default function PostCreator(props: PostCreateProps & (TopicCreatorProps | CommentCreatorProps)) {
+type PostCreatorProps = (TopicCreatorProps | CommentCreatorProps) & {
+  open?: boolean;
+  headerTitle?: string;
+  className?: string;
+};
+
+export default function PostCreator(props: PostCreatorProps) {
   const [open, setOpen] = React.useState(props.open == true);
   const [content, setContent] = React.useState("");
   const { t } = useTranslation();
@@ -42,17 +42,17 @@ export default function PostCreator(props: PostCreateProps & (TopicCreatorProps 
 
     switch (props.type) {
       case "Topic": {
-        (props.onCreate as any)({
-            title: data.get("title"),
+        props.onCreate({
+            title: data.get("title") as string,
             isNSFW: data.get("isNSFW") == "on",
-            tags: data.get("tags"),
+            tags: data.get("tags") as string,
             content,
             contentType,
         });
       } break;
 
       case "Comment": {
-        (props.onCreate as any)({
+        props.onCreate({
             content,
             contentType,
             isNSFW: data.get("isNSFW") == "on",
