@@ -32,13 +32,17 @@ type PostCreatorProps = (TopicCreatorProps | CommentCreatorProps) & {
 export default function PostCreator(props: PostCreatorProps) {
   const [open, setOpen] = React.useState(props.open == true);
   const [content, setContent] = React.useState("");
+  const [contentType, setContentType] = React.useState(0);
   const { t } = useTranslation();
+
+  React.useEffect(() => {
+    setContent("");
+  }, [contentType]);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
-    const contentType = parseInt(data.get("contentType") as string, 10);
 
     switch (props.type) {
       case "Topic": {
@@ -98,9 +102,12 @@ export default function PostCreator(props: PostCreatorProps) {
       }
       <div className="form-group">
         <label>{t("label.content")}</label>
-        <select name="contentType" className="form-control">
-          <option value="0">{"Markdown"}</option>
-          <option value="1">{"Image"}</option>
+        <select
+          name="contentType"
+          className="form-control"
+          onChange={e => setContentType(parseInt(e.currentTarget.value, 10))}>
+          <option selected={contentType == 0} value="0">{"Markdown"}</option>
+          <option selected={contentType == 1} value="1">{"Image"}</option>
         </select>
         <small
           id="contentHelp"
@@ -109,7 +116,17 @@ export default function PostCreator(props: PostCreatorProps) {
         </small>
       </div>
       <div className="form-group">
-        <MarkdownEditor onChange={setContent}/>
+        {contentType == 0 &&
+          <MarkdownEditor onChange={setContent}/>
+        }
+        {contentType == 1 &&
+          <input
+            type="url"
+            className="form-control"
+            placeholder="URL"
+            value={content}
+            onChange={e => setContent(e.currentTarget.value)}/>
+        }
       </div>
       <div className="form-group form-check">
         <input
