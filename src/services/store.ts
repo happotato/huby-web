@@ -247,7 +247,6 @@ function reducer(state: ApplicationState = initialApplicationState, action: Appl
     };
 
     default: {
-      console.warn("Invalid action type:", action.type);
       return state;
     }
   }
