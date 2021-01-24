@@ -1,17 +1,19 @@
 import { createStore, Action, applyMiddleware } from "redux";
 import ReduxThunk, { ThunkAction } from "redux-thunk";
 import {
+  User,
   UserToken,
   LogInData,
   SignUpData,
   SortMode,
   auth,
   login,
-  createAccount
+  createAccount,
+  getUser,
 } from "./api";
 
 export type ViewMode = "minimal" | "image";
-export type ApplicationActionType = "LOGGING_IN" | "LOGIN" | "LOGOUT" | "FAVORITE_HUB" | "UNFAVORITE_HUB" | "TOGGLE_NSFW" | "SET_VIEW" | "SET_SORT";
+export type ApplicationActionType = "LOGGING_IN" | "LOGIN" | "LOGOUT" | "UPDATE_USER" | "FAVORITE_HUB" | "UNFAVORITE_HUB" | "TOGGLE_NSFW" | "SET_VIEW" | "SET_SORT";
 
 export interface ApplicationState {
   user?: UserToken;
@@ -23,7 +25,7 @@ export interface ApplicationState {
 }
 
 interface ApplicationAction extends Action<ApplicationActionType> {
-  payload?: string | ViewMode | UserToken;
+  payload?: string | ViewMode | UserToken | User;
 }
 
 type ApplicationThunkAction<T> = ThunkAction<T, ApplicationState, never, ApplicationAction>;
@@ -114,6 +116,20 @@ export function logoutAction(): ApplicationAction {
   };
 }
 
+export function updateUserAction(): ApplicationThunkAction<void> {
+  return async (dispatch, getState) => {
+    const state = getState();
+    if (state.user) {
+      const user = await getUser(state.user.user.username, state.user.token);
+
+      dispatch({
+        type: "UPDATE_USER",
+        payload: user,
+      });
+    }
+  };
+}
+
 export function favoriteHubAction(name: string): ApplicationAction {
   return {
     type: "FAVORITE_HUB",
@@ -181,6 +197,18 @@ function reducer(state: ApplicationState = initialApplicationState, action: Appl
         ...state,
         user: undefined,
         isLoadingUser: false,
+      };
+    };
+
+    case "UPDATE_USER": {
+      if (!state.user) return state;
+
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          user: action.payload as User,
+        }
       };
     };
 

@@ -16,7 +16,7 @@ import {
   useApi,
 } from "~/services/api";
 
-import { ApplicationState } from "~/services/store";
+import { ApplicationState, updateUserAction } from "~/services/store";
 import { createHubUrl } from "~/services/utils";
 
 export interface UserPageProps {
@@ -73,6 +73,7 @@ export default function UserPage(props: UserPageProps) {
 
     setCurrentUser(user);
     setEdit(false);
+    dispatch(updateUserAction());
   }
 
   const isSelf = api.user?.id == props.user.id;
