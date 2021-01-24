@@ -36,37 +36,8 @@ $input-focus-border-color: scale-color($dark, $lightness: 30%);
 
 @import "node_modules/bootstrap/scss/bootstrap";
 
-$border-bottom-width: 3px;
-$btn-active-border-bottom-width: 2px;
-
 .btn {
     font-weight: bold;
-}
-
-.btn-group > .btn {
-    &.active {
-        z-index: 0;
-    }
-
-    &:not(.active) {
-        z-index: 1;
-    }
-}
-
-@each $n, $c in $theme-colors {
-    .btn-#{$n}:not(.badge), .btn-outline-#{$n}:not(.badge) {
-        border-bottom: $border-bottom-width solid  scale-color($color: $c, $lightness: -10%);
-
-        &:hover, &:focus {
-            border-bottom-color: scale-color($color: $c, $lightness: -20%);
-        }
-        
-        &.active {
-            margin-top: $border-bottom-width - $btn-active-border-bottom-width;
-            border-bottom-width: $btn-active-border-bottom-width;
-            border-bottom-color: scale-color($color: $c, $lightness: -30%) !important;
-        }
-    }
 }
 
 .btn-secondary {
@@ -75,12 +46,15 @@ $btn-active-border-bottom-width: 2px;
 
 .btn-transparent {
     @extend .text-muted;
-    @extend .border-0;
-    background-color: transparent !important;
-}
+    @extend .p-0;
 
-.card, .form-control {
-    border-bottom-width: $border-bottom-width;
+    font-size: 1rem !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+
+    &:hover {
+        @extend .text-dark;
+    }
 }
 
 .card-header {
