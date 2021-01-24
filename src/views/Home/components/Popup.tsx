@@ -15,7 +15,7 @@ export default function Popup(props: PopupProps) {
         <div className="popup-content">
           <div className="card-header d-flex flex-row justify-content-between align-items-center">
             <b>{props.title}</b>
-            <button className="btn btn-secondary btn-sm" onClick={() => props.onCloseRequest?.()}>
+            <button className="btn btn-transparent btn-sm" onClick={() => props.onCloseRequest?.()}>
               <i className="text-muted fa fa-close" aria-hidden="true"></i>
             </button>
           </div>

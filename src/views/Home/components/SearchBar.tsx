@@ -68,7 +68,7 @@ export default function SearchBar<T>(props: SearchBarProps<T>) {
         <input
           ref={inputRef}
           name="search"
-          className="form-control"
+          className="form-control form-control-sm"
           type="text"
           placeholder={props.placeholder}
           spellCheck="false"

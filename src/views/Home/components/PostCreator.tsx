@@ -105,9 +105,10 @@ export default function PostCreator(props: PostCreatorProps) {
         <select
           name="contentType"
           className="form-control"
-          onChange={e => setContentType(parseInt(e.currentTarget.value, 10))}>
-          <option selected={contentType == 0} value="0">{"Markdown"}</option>
-          <option selected={contentType == 1} value="1">{"Image"}</option>
+          onChange={e => setContentType(parseInt(e.currentTarget.value, 10))}
+          defaultValue={contentType}>
+          <option value={0}>{"Markdown"}</option>
+          <option value={1}>{"Image"}</option>
         </select>
         <small
           id="contentHelp"
@@ -156,8 +157,8 @@ export default function PostCreator(props: PostCreatorProps) {
           <b>{props.headerTitle}</b>
           {!props.open &&
             <button
-              className={`btn btn-secondary btn-sm${open ? " active" : ""}`}>
-              <i className="text-muted fa fa-chevron-down" aria-hidden="true"></i>
+              className="btn btn-transparent btn-sm">
+              <i className={`text-muted fa fa-chevron-${open ? "up" : "down"}`} aria-hidden="true"></i>
             </button>
           }
         </div>

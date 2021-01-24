@@ -240,9 +240,11 @@ export default function Post(props: PostProps) {
                 className={`fa fa-chevron-up${state.reaction == "like" ? " text-primary" : ""}`}
                 aria-hidden="true"/>
             </button>
-            <b className="text-muted">
-              {t("count", { value: state.post.likes - state.post.dislikes })}
-            </b>
+            <small>
+              <b className="text-muted">
+                {t("count", { value: state.post.likes - state.post.dislikes })}
+              </b>
+            </small>
             <button
               className="btn btn-transparent btn-sm"
               onClick={() => api.user && react("dislike")}>
@@ -304,9 +306,9 @@ export default function Post(props: PostProps) {
               </Link>
             </small>
           }
-          <div className="d-flex flex-row align-items-center">
+          <div className="d-flex flex-row align-items-start">
             <button
-              className="btn btn-secondary btn-sm mt-1 mr-2"
+              className="btn btn-transparent btn-sm mr-2"
               onClick={() => toggleShowContent()}>
               {!state.showContent &&
                 <i className="fa fa-expand" aria-hidden="true"></i>
