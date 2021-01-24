@@ -82,7 +82,7 @@ export interface Topic extends PostBase {
   title: string;
   tags: string;
   stickied: boolean;
-  locked: number;
+  locked: boolean;
   postType: "Topic";
 }
 
