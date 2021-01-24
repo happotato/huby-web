@@ -136,10 +136,12 @@ export default function Header() {
   return (
     <nav className="navbar navbar-expand-md navbar-light bg-light border-bottom">
       <div className="row no-gutters align-items-center justify-content-between w-100">
-        <Link className="col-auto navbar-brand text-muted" to={createHomeUrl()}>
-          <b>{process.env.NAME}</b>
-        </Link>
-        <div className="col col-md-6 d-none d-md-block">
+        <div className="col">
+          <Link className="navbar-brand text-muted" to={createHomeUrl()}>
+            <b>{process.env.NAME}</b>
+          </Link>
+        </div>
+        <div className="col col-md-3 d-none d-md-block">
           {searchbar}
         </div>
         <div className="col-auto d-none d-md-block ml-3">
@@ -152,12 +154,12 @@ export default function Header() {
         }
         <div className="col-auto d-flex d-md-none flex-row align-items-center justify-content-end ml-3">
           <button
-            className={`btn btn-secondary btn-sm${showSearchBar ? " active" : ""}`}
+            className={`btn btn-transparent${showSearchBar ? " active" : "mr-3"}`}
             onClick={() => setShowSearchBar(!showSearchBar)}>
             <i className="text-muted fa fa-search" aria-hidden="true"></i>
           </button>
           {!showSearchBar &&
-            <UserController className="ml-3" />
+            <UserController />
           }
         </div>
       </div>
