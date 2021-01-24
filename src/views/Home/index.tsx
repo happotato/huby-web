@@ -25,7 +25,7 @@ export default function Home() {
 
   return (
     <React.Fragment>
-      <div id="header" className="sticky-top shadow-sm">
+      <div id="header" className="sticky-top">
         <FavBar />
         <Header />
       </div>
