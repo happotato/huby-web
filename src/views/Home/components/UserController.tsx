@@ -9,6 +9,7 @@ import {
 } from "~/services/store";
 
 import {
+  createClassName,
   createUserUrl,
   createCreateHubUrl,
   createLoginUrl,
@@ -27,21 +28,21 @@ export default function UserController(props: UserControllerProps) {
 
   if (user) {
     return (
-      <div className={`d-flex flex-row align-items-center ${props.className ?? ""}`}>
-        <Link className="btn btn-primary btn-sm mr-2" to={createCreateHubUrl()}>
+      <div className={createClassName("d-flex flex-row align-items-center", props.className)}>
+        <Link className="btn btn-primary btn-sm mr-4" to={createCreateHubUrl()}>
           <b>{t("label.createHub")}</b>
         </Link>
-        <button className="btn btn-secondary btn-sm mr-2">
+        <button className="btn btn-transparent btn-sm mr-4">
           <i className="fa fa-bell" aria-hidden="true"></i>
         </button>
-        <button className="btn btn-secondary btn-sm mr-3" onClick={() => dispatch(logoutAction())}>
+        <button className="btn btn-transparent btn-sm mr-4" onClick={() => dispatch(logoutAction())}>
           <i className="fa fa-sign-out" aria-hidden="true"></i>
         </button>
         <Link to={createUserUrl(user.username)}>
           <img
-            className="rounded-circle"
-            width="34px"
-            height="34px"
+            className="rounded"
+            width="31px"
+            height="31px"
             src={user.imageUrl ?? "/assets/avatar.webp"} />
         </Link>
       </div>
@@ -49,9 +50,9 @@ export default function UserController(props: UserControllerProps) {
   }
 
   return (
-    <div className="d-flex flex-row align-items-center ml-3">
+    <div className="d-flex flex-row align-items-center">
       <Link
-        className="btn btn-outline-primary"
+        className="btn btn-outline-primary btn-sm"
         to={createLoginUrl(history.location.pathname)}>
         <b>{t("label.login")}</b>
       </Link >
