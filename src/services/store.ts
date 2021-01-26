@@ -13,7 +13,6 @@ import {
 } from "./api";
 
 export type ViewMode = "minimal" | "image";
-export type ApplicationActionType = "LOGGING_IN" | "LOGIN" | "LOGOUT" | "UPDATE_USER" | "FAVORITE_HUB" | "UNFAVORITE_HUB" | "TOGGLE_NSFW" | "SET_VIEW" | "SET_SORT";
 
 export interface ApplicationState {
   user?: UserToken;
@@ -24,10 +23,35 @@ export interface ApplicationState {
   sort: SortMode;
 }
 
-interface ApplicationAction extends Action<ApplicationActionType> {
-  payload?: string | ViewMode | UserToken | User;
+interface LoggingInAction extends Action<"LOGGING_IN"> {}
+interface LogoutAction extends Action<"LOGOUT"> {}
+interface ToggleExplicitAction extends Action<"TOGGLE_NSFW"> {}
+
+interface LoginAction extends Action<"LOGIN"> {
+  userToken: UserToken;
 }
 
+interface UpdateUserAction extends Action<"UPDATE_USER"> {
+  user: User;
+}
+
+interface FavoriteHubAction extends Action<"FAVORITE_HUB"> {
+  name: string;
+}
+
+interface UnfavoriteHubAction extends Action<"UNFAVORITE_HUB"> {
+  name: string;
+}
+
+interface SetViewAction extends Action<"SET_VIEW"> {
+  view: ViewMode;
+}
+
+interface SetSortAction extends Action<"SET_SORT"> {
+  sort: SortMode;
+}
+
+type ApplicationAction = LoggingInAction | LoginAction | LogoutAction | UpdateUserAction | FavoriteHubAction | UnfavoriteHubAction | ToggleExplicitAction | SetViewAction | SetSortAction;
 type ApplicationThunkAction<T> = ThunkAction<T, ApplicationState, never, ApplicationAction>;
 
 const initialApplicationState: ApplicationState = {
@@ -53,7 +77,7 @@ export function authAction(): ApplicationThunkAction<void> {
         
         dispatch({
           type: "LOGIN",
-          payload: userToken,
+          userToken,
         });
       } catch (e) {
         dispatch({
@@ -77,7 +101,7 @@ export function createAccountAction(data: SignUpData): ApplicationThunkAction<vo
 
       dispatch({
         type: "LOGIN",
-        payload: userToken,
+        userToken,
       });
     } catch (e) {
       dispatch({
@@ -100,7 +124,7 @@ export function loginAction(data: LogInData): ApplicationThunkAction<void> {
 
       dispatch({
         type: "LOGIN",
-        payload: userToken,
+        userToken,
       });
     } catch (e) {
       dispatch({
@@ -124,7 +148,7 @@ export function updateUserAction(): ApplicationThunkAction<void> {
 
       dispatch({
         type: "UPDATE_USER",
-        payload: user,
+        user,
       });
     }
   };
@@ -133,14 +157,14 @@ export function updateUserAction(): ApplicationThunkAction<void> {
 export function favoriteHubAction(name: string): ApplicationAction {
   return {
     type: "FAVORITE_HUB",
-    payload: name,
+    name,
   };
 }
 
 export function unfavoriteHubAction(name: string): ApplicationAction {
   return {
     type: "UNFAVORITE_HUB",
-    payload: name,
+    name,
   };
 }
 
@@ -150,17 +174,17 @@ export function toggleNsfwAction(): ApplicationAction {
   };
 }
 
-export function setViewAction(mode: ViewMode): ApplicationAction {
+export function setViewAction(view: ViewMode): ApplicationAction {
   return {
     type: "SET_VIEW",
-    payload: mode,
+    view,
   };
 }
 
-export function setSortAction(mode: SortMode): ApplicationAction {
+export function setSortAction(sort: SortMode): ApplicationAction {
   return {
     type: "SET_SORT",
-    payload: mode,
+    sort,
   };
 }
 
@@ -174,7 +198,7 @@ function reducer(state: ApplicationState = initialApplicationState, action: Appl
     };
 
     case "LOGIN": {
-      const user = action.payload as UserToken;
+      const user = action.userToken;
 
       localStorage.setItem("token", user.token);
 
@@ -207,13 +231,13 @@ function reducer(state: ApplicationState = initialApplicationState, action: Appl
         ...state,
         user: {
           ...state.user,
-          user: action.payload as User,
+          user: action.user,
         }
       };
     };
 
     case "SET_VIEW": {
-      const view = action.payload as ViewMode;
+      const view = action.view;
       localStorage.setItem("view", view);
 
       return {
@@ -223,7 +247,7 @@ function reducer(state: ApplicationState = initialApplicationState, action: Appl
     };
 
     case "SET_SORT": {
-      const sort = action.payload as SortMode;
+      const sort = action.sort;
       localStorage.setItem("sort", sort);
 
       return {
@@ -233,36 +257,28 @@ function reducer(state: ApplicationState = initialApplicationState, action: Appl
     };
 
     case "FAVORITE_HUB": {
-      if (action.payload) {
-        const favoriteHubs = state.favoriteHubs
-          .filter(name => name != action.payload)
-          .concat([action.payload as string]);
+      const favoriteHubs = state.favoriteHubs
+        .filter(name => name != action.name)
+        .concat([action.name as string]);
 
-        localStorage.setItem("history", favoriteHubs.join(" "));
+      localStorage.setItem("history", favoriteHubs.join(" "));
 
-        return {
-          ...state,
-          favoriteHubs,
-        };
-      }
-
-      return state;
+      return {
+        ...state,
+        favoriteHubs,
+      };
     };
 
     case "UNFAVORITE_HUB": {
-      if (action.payload) {
-        const favoriteHubs = state.favoriteHubs
-          .filter(name => name != action.payload);
+      const favoriteHubs = state.favoriteHubs
+        .filter(name => name != action.name);
 
-        localStorage.setItem("history", favoriteHubs.join(" "));
+      localStorage.setItem("history", favoriteHubs.join(" "));
 
-        return {
-          ...state,
-          favoriteHubs,
-        };
-      }
-
-      return state;
+      return {
+        ...state,
+        favoriteHubs,
+      };
     };
 
     case "TOGGLE_NSFW": {
