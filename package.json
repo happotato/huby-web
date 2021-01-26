@@ -33,6 +33,7 @@
     "css-loader": "^5.0.0",
     "dotenv-webpack": "^6.0.0",
     "html-webpack-plugin": "^4.5.1",
+    "http-server": "^0.12.3",
     "node-sass": "^5.0.0",
     "sass-loader": "^10.0.3",
     "source-map-loader": "^2.0.0",
@@ -45,6 +46,7 @@
   "scripts": {
     "build:dev": "webpack --config webpack.dev.js",
     "build:release": "webpack --config webpack.production.js",
-    "build:clear": "rm -rf dist"
+    "build:clear": "rm -rf dist",
+    "server": "http-server dist"
   }
 }
