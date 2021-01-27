@@ -79,7 +79,7 @@ export default function SearchBar<T>(props: SearchBarProps<T>) {
       </form>
       {popup &&
         <div>
-          <div className="card mt-2 overflow-auto" ref={popupRef}>
+          <div className="card shadow-sm overflow-auto mt-2  ref={popupRef}">
             {popup}
           </div>
         </div>
