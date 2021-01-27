@@ -7,6 +7,7 @@ import {
   Post,
   TopicCreateData,
   CommentCreateData,
+  useApi,
 } from "~/services/api";
 
 import { createClassName } from "~/services/utils";
@@ -34,6 +35,7 @@ export default function PostCreator(props: PostCreatorProps) {
   const [content, setContent] = React.useState("");
   const [contentType, setContentType] = React.useState(0);
   const { t } = useTranslation();
+  const api = useApi();
 
   React.useEffect(() => {
     setContent("");
@@ -62,6 +64,16 @@ export default function PostCreator(props: PostCreatorProps) {
             isNSFW: data.get("isNSFW") == "on",
         });
       } break;
+    }
+  }
+
+  async function onImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.currentTarget.files;
+
+    if (files) {
+      const file = files[0];
+      const imageUrl = await api.uploadImage(await file.arrayBuffer(), file.type);
+      setContent(imageUrl);
     }
   }
 
@@ -121,12 +133,22 @@ export default function PostCreator(props: PostCreatorProps) {
           <MarkdownEditor onChange={setContent}/>
         }
         {contentType == 1 &&
-          <input
-            type="url"
-            className="form-control"
-            placeholder="URL"
-            value={content}
-            onChange={e => setContent(e.currentTarget.value)}/>
+          <div className="d-flex align-items-center">
+            <input
+              type="url"
+              className="form-control"
+              placeholder="URL"
+              value={content}
+              onChange={e => setContent(e.currentTarget.value)}/>
+            <span className="text-muted mx-2">
+              {t("label.or")}
+            </span>
+            <input
+              className="form-control-file"
+              type="file"
+              accept="image/webp,image/jpeg,image/png,image/gif"
+              onChange={onImageChange} />
+          </div>
         }
       </div>
       <div className="form-group form-check">
