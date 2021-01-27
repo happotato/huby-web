@@ -93,26 +93,28 @@ export default function UserPage(props: UserPageProps) {
                   onChange={onImageChange} />
               }
             </div>
+            <div className="card-header">
+              {edit &&
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder={t("placeholder.name")}
+                  onChange={e => setPatch({ ...patch, name: e.currentTarget.value })}
+                  value={patch.name} />
+              }
+              {!edit &&
+                <React.Fragment>
+                  <h5 className="card-title">
+                    <b>{currentUser.name}</b>
+                  </h5>
+                  <h6 className="card-subtitle text-muted">
+                    {currentUser.username}
+                  </h6>
+                </React.Fragment>
+              }
+            </div>
             <div className="card-body">
-              <h5 className="card-title">
-                {edit &&
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder={t("placeholder.name")}
-                    onChange={e => setPatch({ ...patch, name: e.currentTarget.value })}
-                    value={patch.name} />
-                }
-                {!edit &&
-                  <b>{currentUser.name}</b>
-                }
-                {!edit &&
-                  <p className="text-muted">
-                    <small>{currentUser.username}</small>
-                  </p>
-                }
-              </h5>
-              <span className="text-muted">
+              <p className="card-text text-muted">
                 {edit &&
                   <textarea
                     className="form-control"
@@ -130,7 +132,7 @@ export default function UserPage(props: UserPageProps) {
                     }
                   </React.Fragment>
                 }
-              </span>
+              </p>
             </div>
             {isSelf &&
               <div className="card-footer">

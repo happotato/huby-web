@@ -261,7 +261,7 @@ function HubEditor(props: HubEditorProps) {
           <div className="form-group">
             <label>{t("label.description")}</label>
             <MarkdownEditor
-              value={state.description}
+              defaultValue={state.description}
               placeholder={t("placeholder.description")}
               onChange={description => setState({ ...state, description, })}/>
             <small
@@ -528,38 +528,34 @@ export default function HubPage(props: HubPageProps) {
         </div>
         <div className="col-3 d-none d-lg-block">
           <div className="card mb-2">
-            <div className="card-body">
-              <h5 className="card-title m-0">
+            <div className="card-header">
+              <h5 className="card-title">
                 <b>{state.hub.name}</b>
               </h5>
-              <div className="text-muted">
-                <Link to={createHubUrl(state.hub.name)}>
-                  <b>{state.hub.name}</b>
-                </Link>
-                {" - "}
-                <span>
-                  {t("label.subscriberWithCount", { count: state.hub.subscribersCount })}
-                </span>
-              </div>
+              <h6 className="card-subtitle text-muted">
+                {t("label.subscriberWithCount", { count: state.hub.subscribersCount })}
+              </h6>
             </div>
             {api.user &&
-              <div className="card-body bg-light border-top">
+              <ul className="list-group list-group-flush">
                 {props.hub.permissions.canEdit &&
                   <button
-                    className={`btn btn-primary btn-sm w-100 mb-2${state.editing ? " active" : ""}`}
+                    type="button"
+                    className="list-group-item list-group-item-action text-muted"
                     onClick={() => setState({...state, editing: !state.editing})}>
-                    {t("label.edit")}
+                    <b>{t("label.edit")}</b>
                   </button>
                 }
                 <button
-                  className="btn btn-primary btn-sm w-100"
+                  type="button"
+                  className="list-group-item list-group-item-action text-muted"
                   onClick={() => toggleSubscription()}>
-                  {state.subscribed ? t("label.unsubscribe") : t("label.subscribe")}
+                  <b>{state.subscribed ? t("label.unsubscribe") : t("label.subscribe")}</b>
                 </button>
-              </div>
+              </ul>
             }
-            <div className="card-body border-top">
-              <ReactMarkdown className="card-text mt-2" source={state.hub.description} />
+            <div className="card-body">
+              <ReactMarkdown className="card-text text-muted" source={state.hub.description} />
             </div>
           </div>
           <div className="card">
