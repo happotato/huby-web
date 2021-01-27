@@ -32,7 +32,7 @@ $body-bg: $secondary;
 $body-color: $gray-700;
 $input-bg: $terciary;
 $input-btn-focus-width: .0rem;
-$input-focus-border-color: scale-color($dark, $lightness: 30%);
+$input-focus-border-color: scale-color($dark, $lightness: 50%);
 
 @import "node_modules/bootstrap/scss/bootstrap";
 
