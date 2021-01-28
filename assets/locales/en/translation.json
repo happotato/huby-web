@@ -25,10 +25,12 @@
     "empty": "Nothing to see here",
     "error": "Error",
     "explicit": "Explicit",
+    "gallery": "Gallery",
     "goBackToTop": "Go back to top",
     "hub": "Hub",
     "hub_plural": "Hubs",
     "image": "Image",
+    "list": "List",
     "like": "Like",
     "login": "Login",
     "moderator": "Moderator",
@@ -66,7 +68,8 @@
     "unsubscribe": "Unsubscribe",
     "user": "User",
     "user_plural": "Users",
-    "username": "Username"
+    "username": "Username",
+    "view": "View"
   },
   "placeholder": {
     "content": "Type something here",

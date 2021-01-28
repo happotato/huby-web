@@ -5,22 +5,17 @@ import {
   UserToken,
   LogInData,
   SignUpData,
-  SortMode,
   auth,
   login,
   createAccount,
   getUser,
 } from "./api";
 
-export type ViewMode = "minimal" | "image";
-
 export interface ApplicationState {
   user?: UserToken;
   isLoadingUser: boolean;
   showNsfw: boolean;
   favoriteHubs: string[];
-  view: ViewMode;
-  sort: SortMode;
 }
 
 interface LoggingInAction extends Action<"LOGGING_IN"> {}
@@ -43,15 +38,7 @@ interface UnfavoriteHubAction extends Action<"UNFAVORITE_HUB"> {
   name: string;
 }
 
-interface SetViewAction extends Action<"SET_VIEW"> {
-  view: ViewMode;
-}
-
-interface SetSortAction extends Action<"SET_SORT"> {
-  sort: SortMode;
-}
-
-type ApplicationAction = LoggingInAction | LoginAction | LogoutAction | UpdateUserAction | FavoriteHubAction | UnfavoriteHubAction | ToggleExplicitAction | SetViewAction | SetSortAction;
+type ApplicationAction = LoggingInAction | LoginAction | LogoutAction | UpdateUserAction | FavoriteHubAction | UnfavoriteHubAction | ToggleExplicitAction;
 type ApplicationThunkAction<T> = ThunkAction<T, ApplicationState, never, ApplicationAction>;
 
 const initialApplicationState: ApplicationState = {
@@ -59,8 +46,6 @@ const initialApplicationState: ApplicationState = {
   isLoadingUser: false,
   favoriteHubs: [],
   showNsfw: localStorage.getItem("nsfw") == "true",
-  view: (localStorage.getItem("view") || "minimal") as ViewMode,
-  sort: (localStorage.getItem("sort") || "hot") as SortMode,
 };
 
 export function authAction(): ApplicationThunkAction<void> {
@@ -174,20 +159,6 @@ export function toggleNsfwAction(): ApplicationAction {
   };
 }
 
-export function setViewAction(view: ViewMode): ApplicationAction {
-  return {
-    type: "SET_VIEW",
-    view,
-  };
-}
-
-export function setSortAction(sort: SortMode): ApplicationAction {
-  return {
-    type: "SET_SORT",
-    sort,
-  };
-}
-
 function reducer(state: ApplicationState = initialApplicationState, action: ApplicationAction) : ApplicationState {
   switch (action.type) {
     case "LOGGING_IN": {
@@ -233,26 +204,6 @@ function reducer(state: ApplicationState = initialApplicationState, action: Appl
           ...state.user,
           user: action.user,
         }
-      };
-    };
-
-    case "SET_VIEW": {
-      const view = action.view;
-      localStorage.setItem("view", view);
-
-      return {
-        ...state,
-        view,
-      };
-    };
-
-    case "SET_SORT": {
-      const sort = action.sort;
-      localStorage.setItem("sort", sort);
-
-      return {
-        ...state,
-        sort,
       };
     };
 

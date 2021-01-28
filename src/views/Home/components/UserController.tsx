@@ -29,13 +29,13 @@ export default function UserController(props: UserControllerProps) {
   if (user) {
     return (
       <div className={createClassName("d-flex flex-row align-items-center", props.className)}>
-        <Link className="btn btn-primary btn-sm mr-4" to={createCreateHubUrl()}>
+        <Link className="btn btn-primary btn-sm mr-2" to={createCreateHubUrl()}>
           <b>{t("label.createHub")}</b>
         </Link>
-        <button className="btn btn-transparent btn-sm mr-4">
+        <button className="btn btn-transparent btn-sm mr-2">
           <i className="fa fa-bell" aria-hidden="true"></i>
         </button>
-        <button className="btn btn-transparent btn-sm mr-4" onClick={() => dispatch(logoutAction())}>
+        <button className="btn btn-transparent btn-sm mr-2" onClick={() => dispatch(logoutAction())}>
           <i className="fa fa-sign-out" aria-hidden="true"></i>
         </button>
         <Link to={createUserUrl(user.username)}>

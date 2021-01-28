@@ -24,17 +24,13 @@ import {
   CommentCreateData,
   Moderator,
   ModeratorCreateData,
-  SortMode,
   getPost,
   getPosts,
   useApi
 } from "~/services/api";
 
 import {
-  setViewAction,
-  setSortAction,
   ApplicationState,
-  ViewMode,
 } from "~/services/store";
 
 import {
@@ -118,9 +114,9 @@ function PostDetails(props: PostDetailsProps) {
         className="mb-3"
         post={result.post}
         view="minimal"
-        showNsfw
         defaultReaction={result.reaction}
-        defaultExpanded>
+        defaultExpanded
+        showNSFW>
         {api.user &&
           <React.Fragment>
             <a
@@ -423,8 +419,6 @@ export default function HubPage(props: HubPageProps) {
   });
 
   const { t } = useTranslation();
-  const view = useSelector((store: ApplicationState) => store.view);
-  const sort = useSelector((store: ApplicationState) => store.sort);
   const dispatch = useDispatch();
   const history = useHistory();
   const api = useApi();
@@ -511,9 +505,7 @@ export default function HubPage(props: HubPageProps) {
                     hub: state.hub.name,
                     type: "Topic",
                   })}
-                  onTopicCreate={base => api.createTopic(state.hub.name, base)}
-                  sort={sort}
-                  view={view} />
+                  onTopicCreate={base => api.createTopic(state.hub.name, base)}/>
               </Route>
               <Route exact path="/h/hub/:hubName/posts/:postId">
                 {({match}) => (

@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import Error from "~/components/Error";
 import Spinner from "~/components/Spinner";
 import Observer from "~/components/Observer";
+import DropdownButton from "~/components/DropdownButton";
 import MasonryGrid from "./MasonryGrid";
 import PostCreator, { PostCreateCallback } from "./PostCreator";
 
@@ -30,7 +31,9 @@ import {
   createUserUrl,
 } from "~/services/utils";
 
-import { ApplicationState, ViewMode } from "~/services/store";
+import { ApplicationState } from "~/services/store";
+
+type ViewMode = "minimal" | "image";
 
 interface PostProps {
   post: ApiPost;
@@ -40,16 +43,17 @@ interface PostProps {
   onDisliked?: (post: ApiPost) => void;
   defaultReaction?: Reaction;
   defaultExpanded?: boolean;
-  showNsfw?: boolean;
+  showNSFW?: boolean;
   className?: string;
   children?: React.ReactNode;
 }
 
 interface PostListProps {
-  view: ViewMode;
-  sort: SortMode;
   onSort: (sort: SortMode, view: ViewMode) => Promise<PostQueryResult[]>;
   onMore: (sort: SortMode, view: ViewMode, after?: string) => Promise<PostQueryResult[]>;
+  defaultView?: ViewMode;
+  defaultSort?: SortMode;
+  defaultShowNSFW?: boolean;
   onTopicCreate?: PostCreateCallback<TopicCreateData, Promise<Topic>>;
   className?: string;
 }
@@ -60,6 +64,9 @@ interface PostListState {
   hasMore: boolean;
   showPostCreateCard: boolean;
   status: "error" | "loading" | "ok";
+  sort: SortMode;
+  view: ViewMode;
+  showNSFW: boolean;
 }
 
 export default function Post(props: PostProps) {
@@ -80,8 +87,6 @@ export default function Post(props: PostProps) {
       });
     }
   }, [api.user]);
-
-  const showNsfw = props.showNsfw || false;
 
   function toggleShowContent() {
     setState({
@@ -164,7 +169,7 @@ export default function Post(props: PostProps) {
         {thumbnailUrl &&
           <div className="rounded overflow-hidden mb-2">
             <a
-              className={!showNsfw && state.post.isNSFW ? "blur" : ""}
+              className={!props.showNSFW && state.post.isNSFW ? "blur" : ""}
               target="_blank"
               href={state.post.content}>
               <img className="card-img-top" src={thumbnailUrl} />
@@ -238,7 +243,7 @@ export default function Post(props: PostProps) {
               onClick={() => api.user && react("like")}>
               <i
                 className={`fa fa-chevron-up${state.reaction == "like" ? " text-primary" : ""}`}
-                aria-hidden="true"/>
+                aria-hidden="true" />
             </button>
             <small>
               <b className="text-muted">
@@ -250,17 +255,17 @@ export default function Post(props: PostProps) {
               onClick={() => api.user && react("dislike")}>
               <i
                 className={`fa fa-chevron-down${state.reaction == "dislike" ? " text-primary" : ""}`}
-                aria-hidden="true"/>
+                aria-hidden="true" />
             </button>
           </div>
         </div>
         {state.post.postType == "Topic" && !state.showContent && thumbnailUrl &&
           <div className="col-2 col-md-1 mr-2">
             <div className="overflow-hidden rounded w-100 h-100" style={{
-                maxHeight: "5rem",
+              maxHeight: "5rem",
             }}>
               <img
-                className={`w-100 h-100 ${!showNsfw && props.post.isNSFW ? "blur" : ""}`}
+                className={`w-100 h-100 ${!props.showNSFW && props.post.isNSFW ? "blur" : ""}`}
                 loading="lazy"
                 src={thumbnailUrl}
                 style={{
@@ -353,30 +358,30 @@ export function PostList(props: PostListProps) {
     tags: [],
     hasMore: true,
     showPostCreateCard: false,
+    sort: props.defaultSort ?? "hot",
+    view: props.defaultView ?? "minimal",
+    showNSFW: props.defaultShowNSFW == true,
   });
 
   const { t } = useTranslation();
   const showNsfw = useSelector((state: ApplicationState) => state.showNsfw);
   const api = useApi();
 
-  React.useEffect(() => {
-    sort();
-  }, [props.sort]);
-
-  async function sort() {
+  async function sort(sort: SortMode) {
     setState({
       ...state,
       posts: [],
       status: "loading",
     });
 
-    const posts = await props.onSort(props.sort, props.view);
+    const posts = await props.onSort(sort, state.view);
 
     setState({
       ...state,
       posts,
       status: "ok",
       hasMore: posts.length > 0,
+      sort,
     });
   }
 
@@ -392,7 +397,7 @@ export function PostList(props: PostListProps) {
       status: "loading",
     });
 
-    const posts = await props.onMore(props.sort, props.view, after);
+    const posts = await props.onMore(state.sort, state.view, after);
 
     setState({
       ...state,
@@ -420,6 +425,8 @@ export function PostList(props: PostListProps) {
 
         if (post.postType == "Topic") {
           tags = post.tags.split(" ");
+        } else {
+          return false;
         }
 
         return state.tags.every(tag => tags.includes(tag));
@@ -441,6 +448,20 @@ export function PostList(props: PostListProps) {
     setTags(state.tags.filter(tag => tag != name));
   }
 
+  function setView(view: ViewMode) {
+    setState({
+      ...state,
+      view,
+    });
+  }
+
+  function toggleShowExplicit() {
+    setState({
+      ...state,
+      showNSFW: !state.showNSFW,
+    });
+  }
+
   return (
     <div className={props.className}>
       {(api.user && props.onTopicCreate) &&
@@ -450,9 +471,72 @@ export function PostList(props: PostListProps) {
           headerTitle={t("label.createTopic")}
           onCreate={onTopicCreate} />
       }
+      <div className="row no-gutters">
+        <DropdownButton className="col-auto d-inline-block mb-1" text={t("label.view")}>
+          {(close) => (
+            <div className="p-2 d-flex flex-column">
+              <button
+                className="btn btn-transparent btn-sm text-left"
+                onClick={() => {
+                  setView("minimal");
+                  close();
+                }}>
+                {t("label.list")}
+              </button>
+              <button
+                className="btn btn-transparent btn-sm text-left"
+                onClick={() => {
+                  setView("image");
+                  close();
+                }}>
+                {t("label.gallery")}
+              </button>
+            </div>
+          )}
+        </DropdownButton>
+        <DropdownButton className="col-auto d-inline-block mb-1" text={"Sort"}>
+          {(close) => (
+            <div className="p-2 d-flex flex-column">
+              <button
+                className="btn btn-transparent btn-sm text-left"
+                onClick={() => {
+                  sort("top");
+                  close();
+                }}>
+                {"Top"}
+              </button>
+              <button
+                className="btn btn-transparent btn-sm text-left"
+                onClick={() => {
+                  sort("hot");
+                  close();
+                }}>
+                {"Hot"}
+              </button>
+              <button
+                className="btn btn-transparent btn-sm text-left"
+                onClick={() => {
+                  sort("new");
+                  close();
+                }}>
+                {"New"}
+              </button>
+            </div>
+          )}
+        </DropdownButton>
+        <div className="ml-auto">
+          <button
+            className="btn btn-sm btn-transparent"
+            onClick={() => toggleShowExplicit()}>
+            <span className={state.showNSFW == true ? "text-dark" : undefined}>
+              {t("label.explicit")}
+            </span>
+          </button>
+        </div>
+      </div>
       {state.tags.length > 0 &&
         <button
-          className="btn btn-sm btn-primary mr-2 mb-3"
+          className="btn btn-sm btn-primary mr-2 mb-2"
           onClick={() => setTags([])}>
           <i className="fa fa-times" aria-hidden="true"></i>
         </button>
@@ -460,33 +544,33 @@ export function PostList(props: PostListProps) {
       {state.tags.map((tag, i) => (
         <button
           key={i}
-          className="btn btn-sm btn-dark mr-2 mb-3"
+          className="btn btn-sm btn-dark mr-2 mb-2"
           onClick={() => removeTag(tag)}>
           <b>{tag}</b>
         </button>
       ))}
-      {props.view == "minimal" &&
+      {state.view == "minimal" &&
         <div className="post-list-view">
           {getCurrentPosts().map(({ reaction, post }) => (
             <Post
               key={post.id}
               post={post}
-              view={props.view}
-              showNsfw={showNsfw}
+              view={state.view}
+              showNSFW={state.showNSFW}
               defaultReaction={reaction}
               onTagClick={addTag} />
           ))}
         </div>
       }
-      {props.view == "image" &&
+      {state.view == "image" &&
         <MasonryGrid items={getCurrentPosts()}>
           {({ reaction, post }) => (
             <Post
               key={post.id}
               className="mb-2"
               post={post}
-              view={props.view}
-              showNsfw={showNsfw}
+              view={state.view}
+              showNSFW={state.showNSFW}
               defaultReaction={reaction}
               onTagClick={addTag} />
           )}

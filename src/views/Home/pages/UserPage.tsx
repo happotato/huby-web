@@ -7,12 +7,10 @@ import Error from "~/components/Error";
 import Spinner from "~/components/Spinner";
 import { useAsync } from "~/components/Async";
 import { PostList } from "../components/Post";
-import Banner from "../components/Banner";
 
 import {
   User,
   UserPatch,
-  SortMode,
   useApi,
 } from "~/services/api";
 
@@ -32,9 +30,6 @@ export default function UserPage(props: UserPageProps) {
     status: props.user.status,
     imageUrl: props.user.imageUrl,
   });
-
-  const view = useSelector((store: ApplicationState) => store.view);
-  const sort = useSelector((store: ApplicationState) => store.sort);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -198,9 +193,6 @@ export default function UserPage(props: UserPageProps) {
           </div>
         </div>
         <div className="col">
-          <Banner
-            className="mb-3"
-            defaultButtons />
           <PostList
             onSort={(sort) => api.getPosts({
               sort,
@@ -212,9 +204,7 @@ export default function UserPage(props: UserPageProps) {
               after,
               owner: props.user.username,
               limit: 20,
-            })}
-            sort={sort}
-            view={view} />
+            })}/>
         </div>
       </div>
     </main>

@@ -46,14 +46,11 @@ $input-focus-border-color: scale-color($dark, $lightness: 50%);
 
 .btn-transparent {
     @extend .text-muted;
-    @extend .p-0;
-
-    font-size: 1rem !important;
     background-color: transparent !important;
     border-color: transparent !important;
 
     &:hover {
-        @extend .text-dark;
+        background-color: rgba(0, 0, 0, 0.05) !important;
     }
 }
 
@@ -63,6 +60,18 @@ $input-focus-border-color: scale-color($dark, $lightness: 50%);
 
 html, body {
     background-color: $secondary;
+}
+
+.p-abs {
+    position: absolute !important;
+}
+
+.z-1 {
+    z-index: 100;
+}
+
+.z-2 {
+    z-index: 200;
 }
 
 .w-max-content {
